@@ -1,0 +1,5 @@
+name,father_name,mother_name,gender,phone,present_address,permanent_address,join_date,account_no,date
+John Doe,John Doe Sr.,Mary Doe,Male,1234567890,123 Main St,456 Oak St,1/1/2023,2002,1/1/2023
+Jane Doe,James Doe,Susan Doe,Female,9876543210,456 Elm St,789 Pine St,1/2/2023,2002,1/2/2023
+Bob Smith,Bob Smith Sr.,Alice Smith,Male,5555555555,789 Maple St,101 Oak St,1/3/2023,2003,1/3/2023
+Alice Johnson,David Johnson,Susan Johnson,Female,9998887777,102 Pine St,103 Elm St,1/4/2023,2004,1/4/2023

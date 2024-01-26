@@ -1,0 +1,4 @@
+account_no,monthly_amount,monthly_installments,monthly_interest,interest_installments,extra_interest,loan_installment,late_fee,date
+DPS0170,1000,12,200,6,0,150,0,24/1/2024
+DPS0171,800,10,150,5,0,120,0,24/1/2024
+DPS0191,1200,15,250,8,0,180,0,24/1/2024
