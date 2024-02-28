@@ -55,10 +55,10 @@
                                     </div>
                                     <div class="col-md-4">
                                         <table class="table table-sm table-light table-bordered">
-                                            <tr><th>মোট ঋণ প্রদান</th><td>{{$loans->sum('loan_amount')}}</td></tr>
-                                            <tr><th>মোট ঋণ ফেরত</th><td>{{$loans->sum('paid_loan')}}</td></tr>
-                                            <tr><th>ঋণের লভ্যাংশ আদায়</th><td>{{$loans->sum('paid_interest')}}</td></tr>
-                                            <tr><th>অবশিষ্ট ঋণ</th><td>{{$loans->sum('balance')}}</td></tr>
+                                            <tr><th>মোট ঋণ প্রদান</th><td>{{$saving->total_loan_provide}}</td></tr>
+                                            <tr><th>মোট ঋণ ফেরত</th><td>{{$saving->total_paid_loan}}</td></tr>
+                                            <tr><th>ঋণের লভ্যাংশ আদায়</th><td>{{$saving->total_paid_interest}}</td></tr>
+                                            <tr><th>অবশিষ্ট ঋণ</th><td>{{ $saving->remain_loan }}</td></tr>
                                         </table>
                                     </div>
                                 </div>
@@ -210,16 +210,14 @@
                                 $loans = \App\Models\MonthlyLoan::where('account_no',$saving->account_no)->get();
                             @endphp
                             @foreach($loans as $item)
-                                @php
-                                    $total_interest = \App\Models\MonthlyCollection::where('loan_id',$item->id)->sum('monthly_interest');
-                                @endphp
+
                                 <tr>
                                     <td>{{ $item->account_no }}</td>
                                     <td>{{ date('d/m/Y',strtotime($item->date)) }}</td>
                                     <td>{{ $item->loan_amount }}</td>
                                     <td>{{ $item->interest_rate }}%</td>
-                                    <td>{{ $item->balance }}</td>
-                                    <td>{{ $total_interest }}</td>
+                                    <td>{{ $item->remain_balance }}</td>
+                                    <td>{{ $item->total_paid_interest +  $item->extra_interest}}</td>
                                     <td> @if($item->status=='active')
                                             <span class="badge bg-success">চলমান</span>
                                         @else

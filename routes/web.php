@@ -155,3 +155,8 @@ Route::get('fdr-withdraw-report',[\App\Http\Controllers\ReportController::class,
 Route::get('/import', [ImportController::class, 'importCSVForm'])->name('import.form');
 Route::post('/import-daily', [ImportController::class, 'importDailySavings'])->name('import.daily');
 Route::post('/import-monthly', [ImportController::class, 'importMonthlySavings'])->name('import.monthly');
+
+Route::resource('add-profits',\App\Http\Controllers\AddProfitController::class);
+Route::get('daily-profits',[\App\Http\Controllers\AddProfitController::class,'dailyProfits'])->name('profits.daily');
+Route::get('monthly-profits',[\App\Http\Controllers\AddProfitController::class,'monthlyProfits'])->name('profits.monthly');
+

@@ -83,9 +83,9 @@
                             </div>
                             <div class="col-md-4">
                                 <table class="table table-sm table-light">
-                                    <tr><th>ঋণ ফেরত</th> <td>{{ $loan->paid_loan }}</td></tr>
-                                    <tr><th>অবশিষ্ট ঋণ</th> <td>{{ $loan->balance }}</td></tr>
-                                    <tr><th>লভ্যাংশ আদায়</th> <td>{{ $interest }}</td></tr>
+                                    <tr><th>ঋণ ফেরত</th> <td>{{ $loan->total_paid_loan }}</td></tr>
+                                    <tr><th>অবশিষ্ট ঋণ</th> <td>{{ $loan->remain_balance }}</td></tr>
+                                    <tr><th>লভ্যাংশ আদায়</th> <td>{{ $loan->total_paid_interest + $loan->extra_interest }}</td></tr>
                                 </table>
                             </div>
                         </div>

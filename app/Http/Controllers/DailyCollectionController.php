@@ -231,6 +231,19 @@ class DailyCollectionController extends Controller
                 }
 
             }
+            
+            if ($collection->late_fee>0){
+                Transaction::create([
+                    'transaction_category_id' => 11,
+                    'date' => $collection->date,
+                    'trx_id' => $collection->trx_id,
+                    'amount' => $collection->late_fee,
+                    'account_no' => $collection->account_no,
+                    'member_id' => $collection->member_id,
+                    'user_id' => $collection->user_id,
+                    'type' => 'credit',
+                ]);
+            }
         }
 
 
@@ -376,6 +389,26 @@ class DailyCollectionController extends Controller
                 $collection->save();
             }
 
+        }
+        
+        if ($collection->late_fee>0) {
+            $transaction = Transaction::where('transaction_category_id',11)->where('trx_id',$collection->trx_id)->first();
+            if ($transaction) {
+                $transaction->amount = $collection->late_fee;
+                $transaction->date = $collection->date;
+                $transaction->save();
+            } else {
+                Transaction::create([
+                    'transaction_category_id' => 11,
+                    'date' => $collection->date,
+                    'trx_id' => $collection->trx_id,
+                    'amount' => $collection->late_fee,
+                    'account_no' => $collection->account_no,
+                    'member_id' => $collection->member_id,
+                    'user_id' => $collection->user_id,
+                    'type' => 'credit',
+                ]);
+            }
         }
     }
 

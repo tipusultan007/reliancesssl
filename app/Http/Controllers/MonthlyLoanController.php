@@ -11,6 +11,7 @@ use App\Models\MonthlySaving;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class MonthlyLoanController extends Controller
@@ -22,7 +23,9 @@ class MonthlyLoanController extends Controller
      */
     public function index()
     {
-        return view('monthlyLoans.index');
+        $collections = MonthlyCollection::select(DB::raw('SUM(loan_installment) as total_paid_loan,
+        SUM(monthly_interest) as total_interest, SUM(extra_interest) as total_extra_interest'))->first();
+        return view('monthlyLoans.index', compact('collections'));
     }
 
     public function dataLoans(Request $request)

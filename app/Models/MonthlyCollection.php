@@ -47,4 +47,6 @@ class MonthlyCollection extends Model
     {
         return $this->belongsTo(MonthlySaving::class,'monthly_saving_id','id');
     }
+
+
 }

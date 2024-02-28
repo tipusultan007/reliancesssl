@@ -73,8 +73,8 @@
                                         <div class="col-xl-6 mb-2">
                                             <label class="form-label-sm" for="userName">ঋণ প্রদানের তারিখ  </label>
                                             <div class="position-relative" id="datepicker1">
-                                                <input type="text" value="{{ date('d/m/Y') }}" class="form-control form-control-sm date" data-provide="datepicker" data-date-autoclose="true" data-date-container="#datepicker1" required>
-                                                <input id="date" name="date" type="hidden" value="{{ date('Y-m-d') }}">
+                                        
+                                                <input id="date" name="date" type="date" class="form-control" value="{{ date('Y-m-d') }}">
                                             </div>
                                         </div>
                                         <div class="col-xl-6 mb-2">
@@ -287,11 +287,12 @@
             let interest_rate = $(this).val();
             calculateInstallment(principal,interest_rate);
         })
-        $('.date')
-            .datepicker({ format: 'dd/mm/yyyy' })
+       /* $('.date')
+            .datepicker({ format: 'dd/mm/yyyy', changeMonth: true,
+            changeYear: true, })
             .on('changeDate', function(e){
                 $('#date').val(e.format('yyyy-mm-dd'));
-            });
+            });*/
 
         $("#account_no").on("select2:select",function (e) {
             let id = e.params.data.id;

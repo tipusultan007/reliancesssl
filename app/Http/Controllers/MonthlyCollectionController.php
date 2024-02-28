@@ -437,14 +437,14 @@ class MonthlyCollectionController extends Controller
             $loan = MonthlyLoan::where('account_no', $collection->account_no)->where('status', 'active')->first();
 
             if ($loan) {
-                $loan->balance -= $collection->loan_installment;
+                /*$loan->balance -= $collection->loan_installment;
                 $loan->paid_loan += $collection->loan_installment;
-                $loan->save();
+                $loan->save();*/
 
                 $this->createTransactionEntry(9, $collection, $collection->loan_installment, 'debit');
 
                 $collection->loan_id = $loan->id;
-                $collection->balance = $loan->balance;
+                $collection->balance = $loan->remain_balance;
                 $collection->save();
             }
         }
@@ -458,7 +458,7 @@ class MonthlyCollectionController extends Controller
             if ($loan) {
                 $this->createTransactionEntry(10, $collection, $collection->monthly_interest, 'debit');
                 $collection->loan_id = $loan->id;
-                $collection->balance = $loan->balance;
+                $collection->balance = $loan->remain_balance;
                 $collection->save();
 
                 $loan->paid_interest += $collection->monthly_interest;
@@ -752,7 +752,7 @@ class MonthlyCollectionController extends Controller
                         $transaction->delete();
                     }
                     $collection->loan_id = $loan->id;
-                    $collection->balance = $loan->balance;
+                    $collection->balance = $loan->remain_balance;
                     $collection->save();
                 }
 
@@ -768,7 +768,7 @@ class MonthlyCollectionController extends Controller
 
                     $transaction = Transaction::where('transaction_category_id',10)->where('trx_id',$collection->trx_id)->first();
                     $collection->loan_id = $loan->id;
-                    $collection->balance = $loan->balance;
+                    $collection->balance = $loan->remain_balance;
                     $collection->save();
 
                     if ($collection->interest_installments>0) {

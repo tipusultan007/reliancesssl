@@ -25,6 +25,8 @@ class MonthlyLoan extends Model
         'paid_interest',
 
     ];
+
+    protected $appends = ['remain_balance'];
     public function member()
     {
         return $this->belongsTo(Member::class);
@@ -53,5 +55,31 @@ class MonthlyLoan extends Model
     public static function totalPaidInterest()
     {
         return MonthlyLoan::sum('paid_interest');
+    }
+
+    public function getTotalPaidInterestAttribute()
+    {
+        return $this->loanCollections()->sum('monthly_interest');
+    }
+
+    public function getExtraInterestAttribute()
+    {
+        return $this->loanCollections()->sum('extra_interest');
+    }
+
+    public function getRemainBalanceAttribute()
+    {
+        $balance = $this->loan_amount - $this->paidLoan();
+
+        return $balance;
+    }
+
+    public function getTotalPaidLoanAttribute()
+    {
+        return $this->paidLoan();
+    }
+    public function paidLoan()
+    {
+        return $this->loanCollections()->sum('loan_installment');
     }
 }

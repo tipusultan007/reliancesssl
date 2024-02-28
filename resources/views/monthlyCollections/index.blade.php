@@ -553,6 +553,7 @@ $(document).ready(function () {
                 data: {account_no: id, date: date},
                 dataType: "json",
                 success: function (data) {
+                    console.log(data);
                     $(".details").html("");
                     $('.btn-details').html("");
                     $(".avatar").html("");
@@ -592,7 +593,7 @@ $(document).ready(function () {
                         <td><b> মোট ঋণ প্রদানঃ </b></td>  <td>${data.loan.loan_amount} টাকা</td>
                         </tr>
                         <tr>
-                        <td><b> অবশিষ্ট ঋণঃ</b></td>  <td>${data.loan.balance} টাকা</td>
+                        <td><b> অবশিষ্ট ঋণঃ</b></td>  <td>${data.loan.remain_balance} টাকা</td>
                         </tr>
                    `);
                     }

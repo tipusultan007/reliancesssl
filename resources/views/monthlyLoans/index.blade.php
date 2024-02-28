@@ -30,7 +30,7 @@
         </div>
         <!-- end page title -->
         @php
-            $loans = \App\Models\MonthlyLoan::get();
+            $totalloans = \App\Models\MonthlyLoan::sum('loan_amount');
         @endphp
         <div class="row">
             <div class="col-md-3">
@@ -39,7 +39,7 @@
                         <h4 class="card-title">মোট ঋণ বিতরণ </h4>
                     </div>
                     <div class="card-body">
-                        <h4 class="text-primary">{{ $loans->sum('loan_amount') }}</h4>
+                        <h4 class="text-primary">{{ $totalloans }}</h4>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                         <h4 class="card-title">মোট ঋণ ফেরত</h4>
                     </div>
                     <div class="card-body">
-                        <h4 class="text-primary">{{ $loans->sum('paid_loan') }}</h4>
+                        <h4 class="text-primary">{{ $collections->total_paid_loan }}</h4>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                         <h4 class="card-title">লভ্যাংশ আদায়</h4>
                     </div>
                     <div class="card-body">
-                        <h4 class="text-primary">{{ $loans->sum('paid_interest') }}</h4>
+                        <h4 class="text-primary">{{ $collections->total_interest + $collections->total_extra_interst }}</h4>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
 
                     </div>
                     <div class="card-body">
-                        <h4 class="text-primary">{{ $loans->sum('balance') }}</h4>
+                        <h4 class="text-primary">{{ $totalloans - $collections->total_paid_loan }}</h4>
                     </div>
                 </div>
             </div>

@@ -117,6 +117,9 @@
                             <a href="{{ route('daily-savings.index') }}">সঞ্চয় তালিকা</a>
                         </li>
                         <li>
+                            <a href="{{ url('daily-profits') }}">দৈনিক সঞ্চয় লভ্যাংশ</a>
+                        </li>
+                        <li>
                             <a href="{{ route('daily-loans.index') }}">দৈনিক ঋণ</a>
                         </li>
 
@@ -140,6 +143,9 @@
                         </li>
                         <li>
                             <a href="{{ route('monthly-savings.index') }}">সঞ্চয় তালিকা</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('monthly-profits') }}">মাসিক সঞ্চয় লভ্যাংশ</a>
                         </li>
                         <li>
                             <a href="{{ route('monthly-loans.index') }}">মাসিক ঋণ</a>
