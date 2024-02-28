@@ -77,10 +77,10 @@ class DailySavingController extends Controller
                 $nestedData['id'] = $post->id;
                 $nestedData['name'] = $post->member->name;
                 $nestedData['account_no'] = $post->account_no;
-                $nestedData['deposit'] = $post->deposit;
-                $nestedData['withdraw'] = $post->withdraw;
-                $nestedData['profit'] = $post->profit;
-                $nestedData['total'] = $post->total;
+                $nestedData['deposit'] = $post->total_deposit;
+                $nestedData['withdraw'] = $post->total_withdraw;
+                $nestedData['profit'] = $post->total_profit;
+                $nestedData['total'] = $post->total_balance;
                 $nestedData['status'] = $status;
 
                 $nestedData['date'] = date('j M Y',strtotime($post->date));

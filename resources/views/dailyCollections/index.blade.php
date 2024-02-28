@@ -660,8 +660,8 @@
                 showCancelButton: !0,
                 confirmButtonColor: '#0acf97',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'হ্যাঁ, মুছে ফেলুন!',
-                cancelButtonText: 'না, বাতিল করুন',
+                confirmButtonText: 'হ্যাঁ',
+                cancelButtonText: 'না',
                 reverseButtons: !0
             }).then(function (e) {
 

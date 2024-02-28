@@ -61,22 +61,22 @@
                                             <ul class="mb-0 list-inline text-light">
                                                 <li class="list-inline-item me-3">
                                                     <p class="mb-0 font-13 text-white-50">জমা</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->deposit }} টাকা</h5>
+                                                    <h5 class="mb-1 text-white">{{ $saving->total_deposit }} টাকা</h5>
 
                                                 </li>
                                                 <li class="list-inline-item me-3">
                                                     <p class="mb-0 font-13 text-white-50">উত্তোলন</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->withdraw }} টাকা</h5>
+                                                    <h5 class="mb-1 text-white">{{ $saving->total_withdraw }} টাকা</h5>
 
                                                 </li>
                                                 <li class="list-inline-item me-3">
                                                     <p class="mb-0 font-13 text-white-50">লভ্যাংশ</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->profit }} টাকা</h5>
+                                                    <h5 class="mb-1 text-white">{{ $saving->total_profit }} টাকা</h5>
 
                                                 </li>
                                                 <li class="list-inline-item me-3">
                                                     <p class="mb-0 font-13 text-white-50">সর্বমোট জমা</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->total }} টাকা</h5>
+                                                    <h5 class="mb-1 text-white">{{ $saving->total_balance  }} টাকা</h5>
 
                                                 </li>
                                                 <li class="list-inline-item">

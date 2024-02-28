@@ -663,7 +663,7 @@ class MonthlyCollectionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    /*public function update(Request $request, $id)
     {
         $data = $request->all();
         $saving = MonthlySaving::where('account_no',$data['account_no'])->first();
@@ -716,7 +716,6 @@ class MonthlyCollectionController extends Controller
                 }
 
             }
-
             if ($temp->loan_installment>0 || $collection->loan_installment>0)
             {
                 $loan = MonthlyLoan::where('account_no',$collection->account_no)->where('status','active')->first();
@@ -937,6 +936,99 @@ class MonthlyCollectionController extends Controller
         }
 
         return json_encode($collection);
+    }*/
+
+    public function update(Request $request, $id)
+    {
+        $data = $request->all();
+        $saving = MonthlySaving::where('account_no', $data['account_no'])->first();
+        $data['member_id'] = $saving->member_id;
+        $data['monthly_saving_id'] = $saving->id;
+        $data['user_id'] = Auth::id();
+
+        if ($this->isDataEmpty($request, ['monthly_installments', 'interest_installments', 'loan_installment', 'due_return'])) {
+            return "empty";
+        }
+
+        $collection = MonthlyCollection::find($id);
+        $collection->update($data);
+
+        $this->updateTransaction($collection, 1, 'monthly_amount', $saving);
+        $this->updateTransaction($collection, 9, 'loan_installment', $saving);
+        $this->updateTransaction($collection, 10, 'monthly_interest', $saving);
+        $this->updateTransaction($collection, 16, 'extra_interest', $saving);
+        $this->updateTransaction($collection, 12, 'due', $saving);
+        $this->updateTransaction($collection, 13, 'due_return', $saving);
+        $this->updateTransaction($collection, 11, 'late_fee');
+
+        return json_encode($collection);
+    }
+
+    protected function updateTransaction($collection, $categoryId, $amountField, $saving = null)
+    {
+        $newAmount = $collection->$amountField;
+        $transaction = Transaction::where('transaction_category_id', $categoryId)->where('trx_id', $collection->trx_id)->first();
+
+        if (empty($newAmount) || $newAmount == 0) {
+            if ($transaction) {
+                $transaction->delete();
+            }
+        } else {
+            if ($categoryId == 1 && $saving) {
+                $this->updateSavingAndTransaction($saving, $collection, $transaction, $newAmount);
+            } elseif ($categoryId == 9) {
+                $this->updateLoanAndTransaction($collection, $transaction, $newAmount);
+            } else {
+                $this->createOrUpdateTransaction($categoryId, $collection, $transaction, $newAmount);
+            }
+        }
+    }
+
+    protected function updateSavingAndTransaction($saving, $collection, $transaction, $amount)
+    {
+        $this->createOrUpdateTransaction(1, $collection, $transaction, $amount);
+    }
+
+    protected function updateLoanAndTransaction($collection, $transaction, $amount)
+    {
+        $loan = MonthlyLoan::where('account_no', $collection->account_no)->where('status', 'active')->first();
+        if ($loan) {
+            $collection->loan_id = $loan->id;
+            $collection->balance = $loan->remain_balance;
+            $collection->save();
+        }
+
+        $this->createOrUpdateTransaction(9, $collection, $transaction, $amount);
+    }
+
+    protected function createOrUpdateTransaction($categoryId, $collection, $transaction, $amount)
+    {
+        if ($transaction) {
+            $transaction->amount = $amount;
+            $transaction->date = $collection->date;
+            $transaction->save();
+        } else {
+            Transaction::create([
+                'transaction_category_id' => $categoryId,
+                'date' => $collection->date,
+                'trx_id' => $collection->trx_id,
+                'amount' => $amount,
+                'account_no' => $collection->account_no,
+                'member_id' => $collection->member_id,
+                'user_id' => $collection->user_id,
+                'type' => 'debit',
+            ]);
+        }
+    }
+
+    protected function isDataEmpty($request, $fields)
+    {
+        foreach ($fields as $field) {
+            if (empty($request->input($field)) && $request->input($field) != 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

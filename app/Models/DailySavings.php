@@ -47,4 +47,31 @@ class DailySavings extends Model
         return DailySavings::sum('withdraw');
     }
 
+    public function collections()
+    {
+        return $this->hasMany(DailyCollection::class,'account_no','account_no');
+    }
+
+    public function getTotalDepositAttribute()
+    {
+        return $this->collections()->sum('deposit');
+    }
+
+    public function getTotalWithdrawAttribute()
+    {
+        return $this->collections()->sum('withdraw');
+    }
+    public function profits()
+    {
+        return $this->hasMany(AddProfit::class,'account_no','account_no');
+    }
+    public function getTotalProfitAttribute()
+    {
+        return $this->profits()->sum('amount');
+    }
+
+    public function getTotalBalanceAttribute()
+    {
+        return $this->total_deposit + $this->total_profit - $this->total_withdraw;
+    }
 }

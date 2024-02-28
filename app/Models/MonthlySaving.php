@@ -58,6 +58,10 @@ class MonthlySaving extends Model
     {
         return MonthlySaving::sum('withdraw');
     }
+    public function getTotalDepositAttribute()
+    {
+       return $this->monthlyCollections()->sum('monthly_amount');
+    }
     public function getTotalLoanProvideAttribute()
     {
        return $this->loans()->sum('loan_amount');
@@ -81,5 +85,19 @@ class MonthlySaving extends Model
     public function getRemainLoanAttribute()
     {
         return $this->total_loan_provide - $this->total_paid_loan;
+    }
+
+    public function profits()
+    {
+        return $this->hasMany(AddProfit::class,'account_no','account_no');
+    }
+    public function getTotalProfitAttribute()
+    {
+        return $this->profits()->sum('amount');
+    }
+
+    public function getTotalBalanceAttribute()
+    {
+        return $this->total_deposit + $this->total_profit;
     }
 }

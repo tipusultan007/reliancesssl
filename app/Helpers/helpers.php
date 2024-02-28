@@ -252,3 +252,12 @@ if (!function_exists('upload_image')) {
         return ImageUploadHelper::upload($file, $folder, $oldFilePath);
     }
 }
+
+function calculatePrincipal($amount,$installment,$total_amount)
+{
+    $principal = $amount*$installment/$total_amount;
+    $data['loan'] = $principal;
+    $data['interest'] = $installment - $principal;
+
+    return $data;
+}

@@ -34,4 +34,6 @@ class DailyCollection extends Model
     {
         return $this->belongsTo(Member::class);
     }
+
+
 }
