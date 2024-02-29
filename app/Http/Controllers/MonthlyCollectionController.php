@@ -52,7 +52,7 @@ class MonthlyCollectionController extends Controller
                 ->orderBy('date','desc')
                 ->get();
 
-            $totalFiltered = DailyCollection::where('account_no','LIKE',"%{$search}%")->count();
+            $totalFiltered = MonthlyCollection::where('account_no','LIKE',"%{$search}%")->count();
         }
 
         $data = array();
