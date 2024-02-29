@@ -165,6 +165,7 @@ class DailyCollectionController extends Controller
         if ($collection->late_fee > 0) {
             $this->createTransaction($collection, 11, 'late_fee', 'credit');
         }
+
     }
 
     protected function createTransaction($collection, $categoryId, $amountField, $type = 'debit')
@@ -196,7 +197,6 @@ class DailyCollectionController extends Controller
                 $interest = $calculation['interest'];
 
                 $collection->loan_id = $loan->id;
-                $collection->loan_balance = $loan->balance;
                 $collection->loan_return = $principal;
                 $collection->interest = $interest;
                 $collection->save();
@@ -204,6 +204,8 @@ class DailyCollectionController extends Controller
                 $this->createTransaction($collection, 6, 'loan_return', 'credit');
                 $this->createTransaction($collection, 7, 'interest', 'credit');
 
+                $collection->loan_balance = $loan->total_balance;
+                $collection->save();
             }
         }
     }
@@ -306,7 +308,6 @@ class DailyCollectionController extends Controller
                 $principal = $calculation['loan'];
                 $interest = $calculation['interest'];
                 $dailyCollection->loan_id = $loan->id;
-                $dailyCollection->loan_balance = $loan->balance;
                 $dailyCollection->loan_return = $principal;
                 $dailyCollection->interest = $interest;
                 $dailyCollection->save();
@@ -314,6 +315,8 @@ class DailyCollectionController extends Controller
                 $this->updateTransaction($dailyCollection, $principalCategoryId, 'loan_return', 'debit');
                 $this->updateTransaction($dailyCollection, $interestCategoryId, 'interest', 'debit');
 
+                $dailyCollection->loan_balance = $loan->total_balance;
+                $dailyCollection->save();
 
             }
         } else {
@@ -365,31 +368,8 @@ class DailyCollectionController extends Controller
     public function destroy(Request $request, $id)
     {
         $collection = DailyCollection::find($id);
-        if ($collection->deposit>0)
-        {
-            $saving = DailySavings::where('account_no',$collection->account_no)->first();
-            $saving->deposit -= $collection->deposit;
-            $saving->total -= $collection->deposit;
-            $saving->save();
-        }
-        if ($collection->withdraw>0)
-        {
-            $saving = DailySavings::where('account_no',$collection->account_no)->first();
-            $saving->withdraw -= $collection->withdraw;
-            $saving->total += $collection->withdraw;
-            $saving->save();
-        }
-        if ($collection->loan_installment>0)
-        {
-            $loan = DailyLoan::find($collection->loan_id);
-            $loan->balance += $collection->loan_installment;
-            $loan->paid_loan -= $collection->loan_return;
-            $loan->paid_interest -= $collection->interest;
-            $loan->save();
-        }
         $transaction = Transaction::where('trx_id',$collection->trx_id)->delete();
         $delete = DailyCollection::destroy($id);
-
         // check data deleted or not
         if ($delete == 1) {
             $success = true;

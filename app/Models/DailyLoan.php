@@ -28,6 +28,8 @@ class DailyLoan extends Model
         'paid_loan',
         'user_id'
     ];
+
+    protected $appends = ['total_balance'];
     public function member()
     {
         return $this->belongsTo(Member::class);
@@ -55,5 +57,11 @@ class DailyLoan extends Model
     public static function totalPaidInterest()
     {
         return DailyLoan::sum('paid_interest');
+    }
+
+    public function getTotalBalanceAttribute()
+    {
+        $paid = $this->loanCollections()->sum('loan_installment');
+        return $this->total - $paid;
     }
 }
