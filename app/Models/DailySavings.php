@@ -22,6 +22,7 @@ class DailySavings extends Model
     ];
 
 
+    protected $appends = ['total_balance'];
     public function member()
     {
         return $this->belongsTo(Member::class);

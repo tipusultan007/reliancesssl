@@ -520,7 +520,7 @@
 
                     $('.details').append(`
                     <tr>
-<td><b> দৈনিক সঞ্চয় জমাঃ </b></td>  <td>${data.savings.total} টাকা</td>
+<td><b> দৈনিক সঞ্চয় জমাঃ </b></td>  <td>${data.savings.total_balance} টাকা</td>
 </tr>
                    `);
 
@@ -531,7 +531,7 @@
 <td><b> মোট ঋণ প্রদানঃ </b></td>  <td>${data.loan.total} টাকা</td>
 </tr>
 <tr>
-<td><b> অবশিষ্ট ঋণঃ</b></td>  <td>${data.loan.balance} টাকা</td>
+<td><b> অবশিষ্ট ঋণঃ</b></td>  <td>${data.loan.total_balance} টাকা</td>
 </tr>
 <tr>
 <td><b> বকেয়া কিস্তিঃ</b></td>  <td>${data.dueInstallment} টি</td>
