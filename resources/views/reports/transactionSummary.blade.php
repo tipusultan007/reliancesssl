@@ -136,7 +136,7 @@
                                 if (sum > 0) {
                                     const row = $('<tr>');
                                     const categoryNameCell = $('<td>').text(category.name);
-                                    const categorySumCell = $('<td class="text-end">').text(sum);
+                                    const categorySumCell = $('<td class="text-end">').text(sum.toFixed(2));
 
                                     row.append(categoryNameCell);
                                     row.append(categorySumCell);
