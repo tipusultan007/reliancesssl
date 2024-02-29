@@ -81,7 +81,7 @@
                                                 </li>
                                                 <li class="list-inline-item">
                                                     <p class="mb-0 font-13 text-white-50"> দৈনিক অবশিষ্ট ঋণ</p>
-                                                    <h5 class="mb-1 text-white">{{ $loan?$loan->balance:0 }} টাকা</h5>
+                                                    <h5 class="mb-1 text-white">{{ $loan?$loan->total_balance:0 }} টাকা</h5>
 
                                                 </li>
                                             </ul>
@@ -266,7 +266,7 @@
                                     <td>{{ $item->loan_amount }}</td>
                                     <td>{{ $item->interest_rate }}%</td>
                                     <td>{{ $item->total }}</td>
-                                    <td>{{ $item->balance }}</td>
+                                    <td>{{ $item->total_balance }}</td>
                                     <td> @if($item->status=='active')
                                             <span class="badge bg-success">চলমান</span>
                                         @else
