@@ -24,11 +24,11 @@ class DailyCollectionController extends Controller
      */
     public function index()
     {
-        $collections = DailyCollection::where('loan_installment','>',0)->get();
+        /*$collections = DailyCollection::where('loan_installment','>',0)->get();
         foreach ($collections as $collection)
         {
             $this->updateLoanTransactions($collection, 'loan_installment', 6, 7);
-        }
+        }*/
 
         return view('dailyCollections.index');
     }
