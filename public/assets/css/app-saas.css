@@ -64,8 +64,8 @@ html[data-menu-color=light] {
 }
 
 html[data-menu-color=dark] {
-    --ct-menu-bg: #000;
-    --ct-menu-item-color: #fff;
+    --ct-menu-bg: #151E33;
+    --ct-menu-item-color: #8c98bb;
     --ct-menu-item-hover-color: #fff;
     --ct-menu-item-active-color: #ffffff;
     --ct-help-box-bg: rgba(255, 255, 255, 0.07);
@@ -13155,7 +13155,7 @@ html[data-sidenav-user=true] .leftbar-user {
 }
 .side-nav .side-nav-link:hover, .side-nav .side-nav-link:focus, .side-nav .side-nav-link:active {
   color: var(--ct-menu-item-hover-color);
-    background-color: #0acf97;
+    background-color: #1c2740;
   text-decoration: none;
 }
 .side-nav .side-nav-link span {
@@ -13220,12 +13220,12 @@ html[data-sidenav-user=true] .leftbar-user {
 }
 .side-nav .menuitem-active > a:hover, .side-nav .menuitem-active > a:focus, .side-nav .menuitem-active > a:active {
   color: var(--ct-menu-item-active-color);
-    background-color: #0acf97;
+    background-color: #1c2740;
 }
 .side-nav .menuitem-active .menuitem-active .active {
   color: var(--ct-menu-item-active-color);
   font-weight: bold;
-    background-color: #0acf97;
+    background-color: #1c2740;
 }
 .side-nav.bottom {
   bottom: 0;
@@ -13302,7 +13302,7 @@ html[data-sidenav-user=true] .leftbar-user {
 .side-nav-forth-level .side-nav-item .side-nav-link:focus,
 .side-nav-forth-level .side-nav-item .side-nav-link:active {
   color: var(--ct-menu-item-hover-color);
-    background-color: #0acf97;
+    background-color: #1c2740;
 }
 .side-nav-second-level li.active > a,
 .side-nav-second-level .side-nav-item.active > a,
