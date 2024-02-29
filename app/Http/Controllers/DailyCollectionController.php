@@ -40,8 +40,6 @@ class DailyCollectionController extends Controller
 
         $limit = $request->input('length');
         $start = $request->input('start');
-        //$order = $columns[$request->input('order.0.column')];
-        //$dir = $request->input('order.0.dir');
 
         if(empty($request->input('search.value')))
         {
@@ -54,19 +52,21 @@ class DailyCollectionController extends Controller
         else {
             $search = $request->input('search.value');
 
-            $posts =  DailyCollection::join('members','members.id','=','daily_collections.member_id')
-                ->with('member')
-                ->where('daily_collections.account_no','LIKE',"%{$search}%")
-                ->orWhere('members.name', 'LIKE',"%{$search}%")
+            $posts =  DailyCollection::with('member')
+                ->where('account_no','LIKE',"%{$search}%")
+                ->orWhereHas('member',function ($query) use($search){
+                    $query->where('name', 'LIKE',"%{$search}%");
+                })
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('date','desc')
                 ->get();
 
-            $totalFiltered = DailyCollection::join('members','members.id','=','daily_collections.member_id')
-                ->where('daily_collections.account_no','LIKE',"%{$search}%")
-                ->orWhere('members.name', 'LIKE',"%{$search}%")
-                ->count();
+            $totalFiltered = DailyCollection::with('member')
+                ->where('account_no','LIKE',"%{$search}%")
+                ->orWhereHas('member',function ($query) use($search){
+                    $query->where('name', 'LIKE',"%{$search}%");
+                })->count();
         }
 
         $data = array();
