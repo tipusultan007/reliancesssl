@@ -30,18 +30,26 @@ class MonthlyLoanController extends Controller
 
     public function dataLoans(Request $request)
     {
+        $columns = array(
+            1 =>'account_no',
+            2=> 'date',
+            7=> 'status',
+        );
+
         $totalData = MonthlyLoan::count();
 
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
         $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
         if(empty($request->input('search.value')))
         {
             $posts = MonthlyLoan::with('member')
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('date','desc')
+                ->orderBy($order,$dir)
                 ->get();
         }
         else {
@@ -54,7 +62,7 @@ class MonthlyLoanController extends Controller
                 })
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy($order,$dir)
                 ->get();
 
             $totalFiltered = MonthlyLoan::with('member')->where('account_no',$search)
@@ -81,6 +89,7 @@ class MonthlyLoanController extends Controller
                 $nestedData['loan_amount'] = $post->loan_amount;
                 $nestedData['interest_rate'] = $post->interest_rate;
                 $nestedData['balance'] = $post->balance;
+                $nestedData['total_paid_loan'] = $post->total_paid_loan;
                 $nestedData['status'] = $status;
                 $nestedData['date'] = date('j M Y',strtotime($post->date));
                 $nestedData['action'] = '<div class="dropdown float-end text-muted">

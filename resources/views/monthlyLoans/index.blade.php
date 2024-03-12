@@ -86,9 +86,10 @@
                             <tr>
                                 <th>নাম </th>
                                 <th>হিসাব নং</th>
-                                <th>ঋণ প্রদান তারিখ</th>
+                                <th>ঋণ'র তারিখ</th>
                                 <th>ঋণের পরিমান</th>
-                                <th>লভ্যাংশের হার</th>
+                                <th>সুদের হার</th>
+                                <th>ঋণ ফেরত</th>
                                 <th>অবশিষ্ট ঋণ</th>
                                 <th>স্ট্যাটাস</th>
                                 <th>Action</th>
@@ -132,20 +133,22 @@
             $('#datatables').DataTable({
                 "proccessing": true,
                 "serverSide": true,
+                "order": [[1,'asc']],
                 "ajax":{
                     "url": "{{ url('dataMonthlyLoans') }}"
                 },
                 columns: [
                     // columns according to JSON
 
-                    { data: 'name' },
+                    { data: 'name', sorting: false },
                     { data: 'account_no' },
                     { data: 'date' },
-                    { data: 'loan_amount' },
-                    { data: 'interest_rate' },
-                    { data: 'balance' },
+                    { data: 'loan_amount', sorting: false },
+                    { data: 'interest_rate', sorting: false },
+                    { data: 'total_paid_loan', sorting: false },
+                    { data: 'balance', sorting: false },
                     { data: 'status' },
-                    { data: 'action' },
+                    { data: 'action' ,sorting: false},
                 ],
                 // Buttons with Dropdown
                 buttons: ["copy", "print"],

@@ -133,21 +133,22 @@ $loans = \App\Models\DailyLoan::get();
             $('#datatables').DataTable({
                 "proccessing": true,
                 "serverSide": true,
+                "order": [[1, 'asc']],
                 "ajax":{
                     "url": "{{ url('dataLoans') }}"
                 },
                 columns: [
                     // columns according to JSON
 
-                    { data: 'name' },
+                    { data: 'name' , sorting: false},
                     { data: 'account_no' },
                     { data: 'date' },
-                    { data: 'loan_amount' },
-                    { data: 'interest' },
-                    { data: 'total' },
-                    { data: 'balance' },
+                    { data: 'loan_amount' , sorting: false},
+                    { data: 'interest', sorting: false },
+                    { data: 'total' , sorting: false},
+                    { data: 'balance', sorting: false },
                     { data: 'status' },
-                    { data: 'action' },
+                    { data: 'action' ,sorting: false},
                 ],
                 /* columnDefs: [
                      {

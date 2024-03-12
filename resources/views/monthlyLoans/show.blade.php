@@ -32,16 +32,24 @@
         <div class="row">
             <div class="col-sm-12">
                 <!-- Profile -->
-                <div class="card bg-primary">
+                <div class="card bg-light-lighten">
                     <div class="card-body profile-user-box">
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="avatar-lg">
+                            <div class="col-md-2">
+                                <div class="avatar-lg d-block mx-auto">
                                     <img src="{{ asset('uploads') }}/{{ $loan->member->photo }}" alt="" class="rounded-circle img-thumbnail">
                                 </div>
-
+                                <a class="btn btn-success my-2 w-100" href="{{ route('monthly-loans.edit',$loan->id) }}">এডিট</a>
+                                <button class="btn btn-primary my-1 w-100" data-bs-toggle="modal" data-bs-target="#statusModal">স্ট্যাটাস</button>
                             </div>
                             <div class="col-md-4">
+                                <table class="table table-sm table-light w-100 table-bordered">
+                                    <tr><th>নাম</th><td><a target="_blank" href="{{ route('members.show',$loan->member_id) }}">{{ $loan->member->name }}</a></td></tr>
+                                    <tr><th>মোবাইল</th><td>{{ $loan->member->phone??'-' }}</td></tr>
+                                    <tr><th>ঠিকানা</th><td>{{ $loan->member->present_address??'-' }}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-3">
                                 @php
                                     //$loan = \App\Models\MonthlyLoan::where('account_no',$saving->account_no)->where('status','active')->first();
                                     if ($loan)
@@ -81,7 +89,7 @@
                                         @endif
                                     </ul>--}}
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <table class="table table-sm table-light">
                                     <tr><th>ঋণ ফেরত</th> <td>{{ $loan->total_paid_loan }}</td></tr>
                                     <tr><th>অবশিষ্ট ঋণ</th> <td>{{ $loan->remain_balance }}</td></tr>
@@ -448,6 +456,35 @@
             </div> <!-- end modal content-->
         </div> <!-- end modal dialog-->
     </div> <!-- end modal-->
+
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header modal-colored-header bg-info">
+                    <h4 class="modal-title" id="info-header-modalLabel">স্ট্যাটাস আপডেট</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="needs-validation" action="{{ route('monthly.loan.status.update',$loan->id) }}" method="POST" id="form-edit">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="{{ $loan->id }}">
+                        <div class="form-group">
+                            <label for="status" class="form-label">স্ট্যাটাস</label>
+                            <select name="status"  class="select2 status form-select">
+                                <option value="active" {{ $loan->status === 'active'?'selected':'' }}>চলমান</option>
+                                <option value="closed" {{ $loan->status === 'closed'?'selected':'' }}>বন্ধ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit"  class="btn btn-primary">আপডেট করুন</button>
+                    </div> <!-- end modal footer -->
+                </form>
+            </div> <!-- end modal content-->
+        </div> <!-- end modal dialog-->
+    </div> <!-- end modal-->
+
 @endsection
 @section('scripts')
 
@@ -472,6 +509,10 @@
     <script src="{{asset('assets/js/pages/demo.toastr.js')}}"></script>
     <script src="{{asset('assets/js/index.bundle.min.js')}}"></script>
     <script>
+
+        $('.status').select2({
+            dropdownParent: $('#statusModal')
+        });
 
         var interest_rate = 0;
         var monthly_amount = 0;

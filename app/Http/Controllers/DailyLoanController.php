@@ -28,12 +28,21 @@ class DailyLoanController extends Controller
 
     public function dataLoans(Request $request)
     {
+        $columns = array(
+
+            1 =>'account_no',
+            2=> 'date',
+            7=> 'status',
+        );
+
         $totalData = DailyLoan::count();
 
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
         $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
         if(empty($request->input('search.value')))
         {
             $posts = DailyLoan::join('members','daily_loans.member_id','=','members.id')
@@ -41,7 +50,7 @@ class DailyLoanController extends Controller
                 ->select('daily_loans.*')
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('name','asc')
+                ->orderBy($order,$dir)
                 ->get();
         }
         else {
@@ -54,7 +63,7 @@ class DailyLoanController extends Controller
                 })
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy($order,$dir)
                 ->get();
 
             $totalFiltered = DailyLoan::with('member')->where('account_no',$search)
@@ -90,8 +99,8 @@ class DailyLoanController extends Controller
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-end" style="">
                                                         <!-- item-->
-                                                        <a href="'.route('daily-loans.show',$post->id).'" class="dropdown-item">View</a>
-                                                        <a href="'.route('daily-loans.edit',$post->id).'" class="dropdown-item">Edit</a>
+                                                        <a href="'.route('daily-loans.show',$post->id).'" class="dropdown-item">দেখুন</a>
+                                                        <a href="'.route('daily-loans.edit',$post->id).'" class="dropdown-item">এডিট</a>
                                                         <a href="javascript:void(0);" onclick="deleteConfirmation('.$post->id.')" class="dropdown-item">Delete</a>
                                                     </div>
                                                 </div>';
@@ -120,6 +129,16 @@ class DailyLoanController extends Controller
         $savings = DailySavings::all();
         $guarantorList = Member::all();
         return view('dailyLoans.create',compact('savings','guarantorList'));
+    }
+
+    public function changeStatus(Request $request)
+    {
+        $loan = DailyLoan::find($request->id);
+        $loan->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success','ঋণের স্ট্যাটাস পরিবর্তন করা হয়েছে!');
     }
 
     /**

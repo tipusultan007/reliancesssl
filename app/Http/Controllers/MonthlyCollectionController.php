@@ -23,6 +23,16 @@ class MonthlyCollectionController extends Controller
     {
         return view('monthlyCollections.index');
     }
+
+    public function changeStatus(Request $request)
+    {
+        $loan = MonthlyLoan::find($request->id);
+        $loan->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success','ঋণের স্ট্যাটাস পরিবর্তন করা হয়েছে!');
+    }
     public function dataCollections(Request $request)
     {
         $totalData = MonthlyCollection::count();

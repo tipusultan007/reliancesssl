@@ -51,7 +51,7 @@ $savings = \App\Models\MonthlySaving::all();
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    
+
                     <h4 class="page-title">দৈনিক সঞ্চয়</h4>
                 </div>
             </div>
@@ -365,21 +365,22 @@ $savings = \App\Models\MonthlySaving::all();
             $('#datatables').DataTable({
                 "proccessing": true,
                 "serverSide": true,
+                "order": [[1,'asc']],
                 "ajax":{
                     "url": "{{ url('dataMonthlySavings') }}"
                 },
                 columns: [
                     // columns according to JSON
 
-                    { data: 'name' },
+                    { data: 'name', sorting: false },
                     { data: 'account_no' },
                     { data: 'date' },
-                    { data: 'deposit' },
-                    { data: 'withdraw' },
-                    { data: 'profit' },
-                    { data: 'total' },
+                    { data: 'deposit', sorting: false },
+                    { data: 'withdraw' , sorting: false},
+                    { data: 'profit', sorting: false },
+                    { data: 'total', sorting: false },
                     { data: 'status' },
-                    { data: 'action' },
+                    { data: 'action', sorting: false},
                 ],
                 /* columnDefs: [
                      {

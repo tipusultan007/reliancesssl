@@ -40,59 +40,40 @@
         <div class="row">
             <div class="col-sm-12">
                 <!-- Profile -->
-                <div class="card bg-primary">
+                <div class="card bg-light">
                     <div class="card-body profile-user-box">
                         <div class="row">
                             <div class="col-2">
-                                <div class="avatar-lg">
+                                <div class="avatar-lg mx-auto">
                                     <img src="{{ asset('uploads') }}/{{ $loan->member->photo }}" alt="" class="rounded-circle img-thumbnail">
                                 </div>
+                                <a class="btn btn-success my-2 w-100" href="{{ route('daily-loans.edit',$loan->id) }}">এডিট</a>
+                                <button class="btn btn-primary my-2 w-100" data-bs-toggle="modal" data-bs-target="#statusModal">স্ট্যাটাস</button>
                             </div>
-                            <div class="col-8">
-                                <div>
-                                    <ul class="mb-0 list-inline text-light">
-                                        <li class="list-inline-item me-3">
-                                            <h5 class="mt-1 mb-1 text-white">{{ $loan->member->name }}</h5>
-                                            <p class="font-13 text-white-50"> {{ $loan->member->phone }}</p>
-                                        </li>
-                                    </ul>
-
-                                    <ul class="mb-0 list-inline text-light">
-                                        <li class="list-inline-item me-3">
-                                            <p class="mb-0 font-13 text-white-50"> হিসাব নং</p>
-                                            <h5 class="mb-1 text-white">{{ $loan->account_no }}</h5>
-                                        </li>
-                                        @if($loan)
-                                            <li class="list-inline-item me-3">
-                                                <p class="mb-0 font-13 text-white-50"> ঋণ বিতরণ</p>
-                                                <h5 class="mb-1 text-white">{{$loan->loan_amount}} টাকা</h5>
-                                            </li>
-                                            <li class="list-inline-item me-3">
-                                                <p class="mb-0 font-13 text-white-50"> মোট সুদ</p>
-                                                <h5 class="mb-1 text-white">{{$loan->interest}}({{$loan->interest_rate}}%) টাকা</h5>
-
-                                            </li>
-                                            <li class="list-inline-item me-3">
-                                                <p class="mb-0 font-13 text-white-50"> মোট ঋণের পরিমান</p>
-                                                <h5 class="mb-1 text-white">{{$loan->total}} টাকা</h5>
-
-                                            </li>
-                                            <li class="list-inline-item me-3">
-                                                <p class="mb-0 font-13 text-white-50"> অবশিষ্ট ঋণ</p>
-                                                <h5 class="mb-1 text-white">{{$loan->balance}} টাকা</h5>
-
-                                            </li>
-                                            <li class="list-inline-item me-3">
-                                                <p class="mb-0 font-13 text-white-50"> লভ্যাংশ আদায়</p>
-                                                <h5 class="mb-1 text-white">{{$loan->paid_interest}} টাকা</h5>
-
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </div>
+                            <div class="col-md-4">
+                                <table class="table table-sm table-light w-100 table-bordered">
+                                    <tr><th>নাম</th><td><a target="_blank" href="{{ route('members.show',$loan->member_id) }}">{{ $loan->member->name }}</a></td></tr>
+                                    <tr><th>মোবাইল</th><td>{{ $loan->member->phone??'-' }}</td></tr>
+                                    <tr><th>হিসাব নং</th><td>{{ $loan->account_no }}</td></tr>
+                                    <tr><th>ঋণ'র তারিখ</th> <td>{{ date('d/m/Y',strtotime($loan->date)) }}</td></tr>
+                                </table>
                             </div>
-                            <div class="col-2">
-                                <a class="btn btn-success" href="{{ route('daily-loans.edit',$loan->id) }}">এডিট</a>
+
+                          <div class="col-md-3">
+                              <table class="table table-sm table-bordered table-light">
+                                  <tr><th>ঋণের পরিমাণ</th> <td>{{ $loan->loan_amount }}</td></tr>
+                                  <tr><th>সুদের পরিমাণ</th> <td>{{$loan->interest}}({{$loan->interest_rate}}%) টাকা</td></tr>
+                                  <tr><th>লভ্যাংশ আদায়</th> <td>{{$loan->paid_interest}}</td></tr>
+                                  <tr><th>অবশিষ্ট ঋণ</th> <td>{{$loan->balance}}</td></tr>
+                              </table>
+                          </div>
+                            <div class="col-md-3">
+                                <table class="table table-sm table-bordered table-light">
+                                    <tr><th>ঋণ প্রদানের তারিখ</th> <td>{{ date('d/m/Y',strtotime($loan->date)) }}</td></tr>
+                                    <tr><th>ঋণের পরিমাণ</th> <td>{{ $loan->loan_amount }}</td></tr>
+                                    <tr><th>সুদের পরিমাণ</th> <td>{{$loan->interest}}({{$loan->interest_rate}}%) টাকা</td></tr>
+                                    <tr><th>সর্বমোট</th> <td>{{$loan->total}}</td></tr>
+                                </table>
                             </div>
                         </div> <!-- end row -->
 
@@ -357,47 +338,28 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header modal-colored-header bg-info">
-                    <h4 class="modal-title" id="info-header-modalLabel">সম্পাদন</h4>
+                    <h4 class="modal-title" id="info-header-modalLabel">স্ট্যাটাস আপডেট</h4>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form class="needs-validation" id="form-edit">
+                <form class="needs-validation" action="{{ route('daily.loan.status.update',$loan->id) }}" method="POST" id="form-edit">
                     @csrf
-                    @method('PATCH')
                     <div class="modal-body">
-                        <input type="hidden" name="id">
-                        <div class="row g-3">
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label" for="account_no">হিসাব নং</label>
-                                <input type="text" name="account_no" value="" class="form-control" readonly>
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label" for="date"> তারিখ </label>
-                                <input name="date" type="date" class="form-control">
-                            </div>
+                        <input type="hidden" name="id" value="{{ $loan->id }}">
+                        <div class="form-group">
+                            <label for="status" class="form-label">স্ট্যাটাস</label>
+                            <select name="status"  class="select2 status form-select">
+                                <option value="active" {{ $loan->status === 'active'?'selected':'' }}>চলমান</option>
+                                <option value="closed" {{ $loan->status === 'closed'?'selected':'' }}>বন্ধ</option>
+                            </select>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <label for="" class="form-label">ঋণ ফেরত</label>
-                                <input type="number" name="loan_installment" class="form-control">
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <label for="late_fee" class="form-label">বিলম্ব ফি </label>
-                                <input type="number" name="late_fee" class="form-control">
-                            </div>
-                            <div class="col-md-12">
-                                <label for="notes" class="form-label">মন্তব্য</label>
-                                <input type="text" name="notes" class="form-control">
-                            </div>
-                        </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit"  class="btn btn-primary" id="btn-update">আপডেট করুন</button>
+                        <button type="submit"  class="btn btn-primary">আপডেট করুন</button>
                     </div> <!-- end modal footer -->
                 </form>
             </div> <!-- end modal content-->
@@ -428,7 +390,9 @@
     <script src="{{asset('assets/js/pages/demo.toastr.js')}}"></script>
     <script src="{{asset('assets/js/index.bundle.min.js')}}"></script>
     <script>
-
+        $('.status').select2({
+            dropdownParent: $('#statusModal')
+        });
         var interest_rate = 0;
         var monthly_amount = 0;
 

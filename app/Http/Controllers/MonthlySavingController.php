@@ -28,18 +28,27 @@ class MonthlySavingController extends Controller
     }
     public function dataSavings(Request $request)
     {
+        $columns = array(
+            1 =>'account_no',
+            2=> 'date',
+            7=> 'status',
+        );
+
         $totalData = MonthlySaving::count();
 
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
         $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
         if(empty($request->input('search.value')))
         {
             $posts = MonthlySaving::with('member')
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy($order,$dir)
                 ->get();
         }
         else {
@@ -52,7 +61,7 @@ class MonthlySavingController extends Controller
                 })
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy($order,$dir)
                 ->get();
 
             $totalFiltered = MonthlySaving::with('member')->where('account_no',$search)

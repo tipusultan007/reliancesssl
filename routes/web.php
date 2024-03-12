@@ -160,3 +160,5 @@ Route::resource('add-profits',\App\Http\Controllers\AddProfitController::class);
 Route::get('daily-profits',[\App\Http\Controllers\AddProfitController::class,'dailyProfits'])->name('profits.daily');
 Route::get('monthly-profits',[\App\Http\Controllers\AddProfitController::class,'monthlyProfits'])->name('profits.monthly');
 
+Route::post('daily-loan-status',[\App\Http\Controllers\DailyLoanController::class,'changeStatus'])->name('daily.loan.status.update');
+Route::post('monthly-loan-status',[\App\Http\Controllers\MonthlyCollectionController::class,'changeStatus'])->name('monthly.loan.status.update');

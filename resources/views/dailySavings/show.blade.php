@@ -42,71 +42,64 @@
                 <div class="card bg-primary">
                     <div class="card-body profile-user-box">
                         <div class="row">
-                            <div class="col-sm-8">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <div class="avatar-lg">
-                                            <img src="{{ asset('storage/'.$saving->member->photo) }}" alt=""
-                                                 class="rounded-circle img-thumbnail">
+                            <div class="col-sm-12">
+                                <div class="row align-items-top">
+                                    <div class="col-md-2 text-center">
+                                        <div class="avatar-lg d-block mx-auto">
+                                            @if( $saving->member->photo != null)
+                                                <img src="{{ asset('storage/'.$saving->member->photo) }}" alt=""
+                                                     class="rounded-circle img-thumbnail">
+                                            @else
+                                                <img src="{{ asset('assets/male.png') }}" alt=""
+                                                     class="rounded-circle img-thumbnail">
+                                            @endif
+
                                         </div>
+                                        <button type="button" class="btn btn-light mt-2" data-bs-toggle="modal"
+                                                data-bs-target="#modalMemberDetails">
+                                            <i class="mdi mdi-account-edit me-1"></i> ব্যক্তিগত তথ্য
+                                        </button>
                                     </div>
                                     @php
                                         $loan = \App\Models\DailyLoan::where('account_no',$saving->account_no)->where('status','active')->latest()->first();
                                     @endphp
-                                    <div class="col">
-                                        <div>
-                                            <h4 class="mt-1 mb-1 text-white"><a class="text-white" href="{{ route('members.show',$saving->member_id) }}">{{ $saving->member->name }}</a> <span class="text-warning">( {{ $saving->account_no }} )</span></h4>
-                                            <p class="font-13 text-white-50"> {{ $saving->member->phone }}</p>
-
-                                            <ul class="mb-0 list-inline text-light">
-                                                <li class="list-inline-item me-3">
-                                                    <p class="mb-0 font-13 text-white-50">জমা</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->total_deposit }} টাকা</h5>
-
-                                                </li>
-                                                <li class="list-inline-item me-3">
-                                                    <p class="mb-0 font-13 text-white-50">উত্তোলন</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->total_withdraw }} টাকা</h5>
-
-                                                </li>
-                                                <li class="list-inline-item me-3">
-                                                    <p class="mb-0 font-13 text-white-50">লভ্যাংশ</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->total_profit }} টাকা</h5>
-
-                                                </li>
-                                                <li class="list-inline-item me-3">
-                                                    <p class="mb-0 font-13 text-white-50">সর্বমোট জমা</p>
-                                                    <h5 class="mb-1 text-white">{{ $saving->total_balance  }} টাকা</h5>
-
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <p class="mb-0 font-13 text-white-50"> দৈনিক অবশিষ্ট ঋণ</p>
-                                                    <h5 class="mb-1 text-white">{{ $loan?$loan->total_balance:0 }} টাকা</h5>
-
-                                                </li>
-                                            </ul>
-                                        </div>
+                                    <div class="col-md-4">
+                                        <table class="table table-sm table-light w-100 table-bordered">
+                                            <tr><th>নাম</th><td><a target="_blank" href="{{ route('members.show',$saving->member_id) }}">{{ $saving->member->name }}</a></td></tr>
+                                            <tr><th>মোবাইল</th><td>{{ $saving->member->phone??'-' }}</td></tr>
+                                            <tr><th>ঠিকানা</th><td>{{ $saving->member->present_address??'-' }}</td></tr>
+                                            <tr><th>তারিখ</th><td>{{ date('d/m/Y',strtotime($saving->date)) }}</td></tr>
+                                        </table>
                                     </div>
-                                </div>
-                            </div> <!-- end col-->
+                                    <div class="col-md-3">
+                                        <table class="table table-sm table-light w-100 table-bordered">
 
-                            <div class="col-sm-4">
-                                <div class="text-center mt-sm-0 mt-3 text-sm-end">
-                                    @if($saving->status=="active")
-                                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                                data-bs-target="#modalAccountClosing">
-                                            <i class="mdi mdi-account-check me-1"></i> হিসাব নিস্পত্তি করুন
-                                        </button>
-                                    @else
-                                        <a href="javascript:void(0);" class="btn btn-danger"
-                                           onclick="makeActive('{{$saving->account_no}}')">
-                                            <i class="mdi mdi-account-check me-1"></i> হিসাব চালু করুন
-                                        </a>
-                                    @endif
-                                    <button type="button" class="btn btn-light" data-bs-toggle="modal"
-                                            data-bs-target="#modalMemberDetails">
-                                        <i class="mdi mdi-account-edit me-1"></i> ব্যক্তিগত তথ্য
-                                    </button>
+                                            <tr><th>জমা</th><td>{{ $saving->total_deposit }}</td></tr>
+                                            <tr><th>উত্তোলন</th><td>{{ $saving->total_withdraw }}</td></tr>
+                                            <tr><th>মুনাফা</th><td>{{ $saving->total_profit }}</td></tr>
+                                            <tr><th>অবশিষ্ট ব্যলেন্স</th><td>{{ $saving->total_balance }}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <table class="table table-sm table-light w-100 table-bordered">
+                                            <tr><th>অবশিষ্ট ঋণ</th><td>{{ $loan?$loan->total_balance:0 }}</td></tr>
+                                            <tr>
+                                                <th colspan="2">
+                                                    @if($saving->status=="active")
+                                                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                                                data-bs-target="#modalAccountClosing">
+                                                            <i class="mdi mdi-account-check me-1"></i> হিসাব নিস্পত্তি করুন
+                                                        </button>
+                                                    @else
+                                                        <a href="javascript:void(0);" class="btn btn-danger"
+                                                           onclick="makeActive('{{$saving->account_no}}')">
+                                                            <i class="mdi mdi-account-check me-1"></i> হিসাব চালু করুন
+                                                        </a>
+                                                    @endif
+                                                </th>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
                             </div> <!-- end col-->
                         </div> <!-- end row -->

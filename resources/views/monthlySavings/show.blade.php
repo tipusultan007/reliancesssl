@@ -37,12 +37,34 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="avatar-lg">
+                                    <div class="col-md-2">
+                                        <div class="avatar-lg d-block mx-auto">
                                             <img src="{{ asset('storage/'.$saving->member->photo) }}" alt="" class="rounded-circle img-thumbnail">
                                         </div>
+
+                                        <button type="button" class="btn w-100 btn-light my-2" data-bs-toggle="modal"
+                                                data-bs-target="#modalMemberDetails">
+                                            <i class="mdi mdi-account-edit me-1"></i> ব্যক্তিগত তথ্য
+                                        </button>
+                                        @if($saving->status=="active")
+                                            <button type="button" class="btn w-100 btn-success" data-bs-toggle="modal" data-bs-target="#modalAccountClosing">
+                                                <i class="mdi mdi-account-check me-1"></i> হিসাব নিস্পত্তি
+                                            </button>
+                                        @else
+                                            <a href="javascript:void(0);"  class="btn btn-danger" onclick="makeActive('{{$saving->account_no}}')">
+                                                <i class="mdi mdi-account-check me-1"></i> হিসাব চালু
+                                            </a>
+                                        @endif
                                     </div>
                                     <div class="col-md-4">
+                                        <table class="table table-sm table-light w-100 table-bordered">
+                                            <tr><th>নাম</th><td><a target="_blank" href="{{ route('members.show',$saving->member_id) }}">{{ $saving->member->name }}</a></td></tr>
+                                            <tr><th>মোবাইল</th><td>{{ $saving->member->phone??'-' }}</td></tr>
+                                            <tr><th>ঠিকানা</th><td>{{ $saving->member->present_address??'-' }}</td></tr>
+                                            <tr><th>তারিখ</th><td>{{ date('d/m/Y',strtotime($saving->date)) }}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-3">
                                         @php
                                             $loans = \App\Models\MonthlyLoan::where('account_no',$saving->account_no)->get();
                                         @endphp
@@ -53,11 +75,11 @@
                                             <tr><th>মুনাফা</th><td>{{ $saving->profit }}</td></tr>
                                         </table>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <table class="table table-sm table-light table-bordered">
-                                            <tr><th>মোট ঋণ প্রদান</th><td>{{$saving->total_loan_provide}}</td></tr>
-                                            <tr><th>মোট ঋণ ফেরত</th><td>{{$saving->total_paid_loan}}</td></tr>
-                                            <tr><th>ঋণের লভ্যাংশ আদায়</th><td>{{$saving->total_paid_interest}}</td></tr>
+                                            <tr><th>ঋণ প্রদান</th><td>{{$saving->total_loan_provide}}</td></tr>
+                                            <tr><th>ঋণ ফেরত</th><td>{{$saving->total_paid_loan}}</td></tr>
+                                            <tr><th>লভ্যাংশ আদায়</th><td>{{$saving->total_paid_interest}}</td></tr>
                                             <tr><th>অবশিষ্ট ঋণ</th><td>{{ $saving->remain_loan }}</td></tr>
                                         </table>
                                     </div>
@@ -66,19 +88,8 @@
 
                             <div class="col-sm-4">
                                 <div class="text-center mt-sm-0 mt-3 text-sm-end">
-                                    @if($saving->status=="active")
-                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAccountClosing">
-                                            <i class="mdi mdi-account-check me-1"></i> হিসাব নিস্পত্তি করুন
-                                        </button>
-                                    @else
-                                        <a href="javascript:void(0);"  class="btn btn-danger" onclick="makeActive('{{$saving->account_no}}')">
-                                            <i class="mdi mdi-account-check me-1"></i> হিসাব চালু করুন
-                                        </a>
-                                    @endif
-                                    <button type="button" class="btn btn-light" data-bs-toggle="modal"
-                                            data-bs-target="#modalMemberDetails">
-                                        <i class="mdi mdi-account-edit me-1"></i> ব্যক্তিগত তথ্য
-                                    </button>
+
+
                                 </div>
                             </div> <!-- end col-->
                         </div> <!-- end row -->

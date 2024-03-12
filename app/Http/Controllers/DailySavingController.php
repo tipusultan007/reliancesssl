@@ -29,18 +29,27 @@ class DailySavingController extends Controller
 
     public function dataAllSavings(Request $request)
     {
+        $columns = array(
+
+            1 =>'account_no',
+            2=> 'date',
+            7=> 'status',
+        );
+
         $totalData = DailySavings::count();
 
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
         $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
         if(empty($request->input('search.value')))
         {
             $posts = DailySavings::with('member')
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy($order,$dir)
                 ->get();
         }
         else {
@@ -53,7 +62,7 @@ class DailySavingController extends Controller
                 })
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('account_no','asc')
+                ->orderBy($order,$dir)
                 ->get();
 
             $totalFiltered = DailySavings::with('member')->where('account_no',$search)
@@ -83,7 +92,7 @@ class DailySavingController extends Controller
                 $nestedData['total'] = $post->total_balance;
                 $nestedData['status'] = $status;
 
-                $nestedData['date'] = date('j M Y',strtotime($post->date));
+                $nestedData['date'] = date('d/m/Y',strtotime($post->date));
                 $nestedData['action'] = '<div class="dropdown float-end text-muted">
                                                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                                                         <i class="mdi mdi-dots-horizontal"></i>
