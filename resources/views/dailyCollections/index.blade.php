@@ -89,7 +89,10 @@
                                     <label for="notes" class="form-label">মন্তব্য</label>
                                     <input type="text" name="notes" class="form-control" id="notes">
                                 </div>
-
+                                <div class="col-md-3">
+                                    <label for="profit_amount" class="form-label">লভ্যাংশ</label>
+                                    <input type="number" name="profit_amount" step="any" class="form-control" id="profit_amount">
+                                </div>
                                 <div class="col-md-3 d-flex align-items-end">
                                     <button class="btn btn-success w-100" type="button" id="btn-submit">সাবমিট</button>
                                 </div>
@@ -131,6 +134,7 @@
                                 <th>উত্তোলন</th>
                                 <th>ঋণ ফেরত</th>
                                 <th>বিলম্ব ফি</th>
+                                <th>লভ্যাংশ</th>
                                 <th>তারিখ</th>
                                 <th>#</th>
                             </tr>
@@ -236,6 +240,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <label for="profit_amount" class="form-label">লভ্যাংশ</label>
+                                <input type="number" name="profit_amount" class="form-control">
+                            </div>
                             <div class="col-md-6">
                                 <label for="notes" class="form-label">মন্তব্য</label>
                                 <input type="text" name="notes" class="form-control">
@@ -313,6 +321,7 @@
                     $("#form-edit input[name='loan_installment']").val(data.loan_installment);
                     $("#form-edit input[name='late_fee']").val(data.late_fee);
                     $("#form-edit input[name='notes']").val(data.notes);
+                    $("#form-edit input[name='profit_amount']").val(data.profit_amount);
                 }
             })
             $("#modalEdit").modal("show");
@@ -417,6 +426,7 @@
                         $("#deposit").val("");
                         $("#withdraw").val("");
                         $("#loan_installment").val("");
+                        $("#profit_amount").val("");
                         $("#late_fee").val("");
                         $("#notes").val("");
                         $(".details").empty();
@@ -447,7 +457,7 @@
                 method: 'POST',
                 data: formData,
                 url: "{{ url('daily-collections') }}/"+id,
-                beforeSend: function () {//We add this before send to disable the button once we submit it so that we prevent the multiple click
+                beforeSend: function () {
                     $this.attr('disabled', true).html("Processing...");
                 },
                 success: function (data) {
@@ -464,6 +474,7 @@
                         $("#withdraw").val("");
                         $("#loan_installment").val("");
                         $("#late_fee").val("");
+                        $("#profit_amount").val("");
                         $("#notes").val("");
                         $(".details").empty();
                         $(".btn-details").empty();
@@ -579,20 +590,22 @@
                 "proccessing": true,
                 "serverSide": true,
                 responsive: true,
+                order: [[7,'desc']],
                 "ajax":{
                     "url": "{{ url('dataCollections') }}"
                 },
                 columns: [
                     // columns according to JSON
 
-                    { data: 'name' },
+                    { data: 'name' , sorting: false},
                     { data: 'account_no' },
-                    { data: 'deposit' },
-                    { data: 'withdraw' },
-                    { data: 'loan_installment' },
-                    { data: 'late_fee' },
+                    { data: 'deposit' , sorting: false},
+                    { data: 'withdraw', sorting: false },
+                    { data: 'loan_installment' , sorting: false},
+                    { data: 'late_fee', sorting: false },
+                    { data: 'profit_amount', sorting: false },
                     { data: 'date' },
-                    { data: 'action' },
+                    { data: 'action', sorting: false },
                 ],
                 /* columnDefs: [
                      {

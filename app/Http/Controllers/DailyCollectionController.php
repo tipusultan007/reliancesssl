@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddProfit;
 use App\Models\DailyCollection;
 use App\Models\DailyLoan;
 use App\Models\DailySavings;
@@ -34,19 +35,24 @@ class DailyCollectionController extends Controller
     }
     public function dataCollections(Request $request)
     {
+        $columns = array(
+            1 =>'account_no',
+            7=> 'date',
+        );
         $totalData = DailyCollection::count();
 
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
         $start = $request->input('start');
-
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
         if(empty($request->input('search.value')))
         {
             $posts = DailyCollection::with('member')
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('date','desc')
+                ->orderBy($order,$dir)
                 ->get();
         }
         else {
@@ -59,7 +65,7 @@ class DailyCollectionController extends Controller
                 })
                 ->offset($start)
                 ->limit($limit)
-                ->orderBy('date','desc')
+                ->orderBy($order,$dir)
                 ->get();
 
             $totalFiltered = DailyCollection::with('member')
@@ -85,6 +91,7 @@ class DailyCollectionController extends Controller
                 $nestedData['loan_installment'] = $post->loan_installment;
                 $nestedData['loan_balance'] = $post->loan_balance;
                 $nestedData['late_fee'] = $post->late_fee;
+                $nestedData['profit_amount'] = $post->profit_amount;
                 $nestedData['loan_id'] = $post->loan_id;
                 $nestedData['date'] = date('d/m/Y',strtotime($post->date));
                 $nestedData['action'] = '<div class="dropdown float-end text-muted">
@@ -133,6 +140,7 @@ class DailyCollectionController extends Controller
 
     public function store(Request $request)
     {
+
         $data = $request->all();
         $saving = DailySavings::where('account_no', $data['account_no'])->first();
 
@@ -151,7 +159,7 @@ class DailyCollectionController extends Controller
 
     protected function isDataEmpty($data)
     {
-        return empty($data['deposit']) && empty($data['withdraw']) && empty($data['loan_installment']);
+        return empty($data['deposit']) && empty($data['withdraw']) && empty($data['loan_installment']) && empty($data['profit_amount']);
     }
 
     protected function createDailyCollectionAndTransactions($data)
@@ -162,8 +170,19 @@ class DailyCollectionController extends Controller
         $this->createTransaction($collection, 2, 'withdraw');
         $this->createLoanTransactions($collection);
 
+
         if ($collection->late_fee > 0) {
             $this->createTransaction($collection, 11, 'late_fee', 'credit');
+        }
+        if ($collection->profit_amount > 0) {
+            AddProfit::create([
+                'account_no' => $collection->account_no,
+                'type' => 'daily',
+                'amount' => $collection->profit_amount,
+                'date' => $collection->date,
+                'daily_collection_id' => $collection->id,
+            ]);
+            $this->createTransaction($collection, 23, 'profit_amount', 'debit');
         }
 
     }
@@ -256,12 +275,62 @@ class DailyCollectionController extends Controller
         $this->updateTransaction($dailyCollection, 1, 'deposit');
         $this->updateTransaction($dailyCollection, 2, 'withdraw');
         $this->updateTransaction($dailyCollection, 11, 'late_fee', 'credit');
+        $this->updateProfitTransaction($dailyCollection, 23, 'profit_amount', 'debit');
         $this->updateLoanTransactions($dailyCollection, 'loan_installment', 6, 7);
 
         $this->deleteTransactionIfEmpty($dailyCollection, 'deposit', 1);
         $this->deleteTransactionIfEmpty($dailyCollection, 'withdraw', 2);
     }
 
+    protected function updateProfitTransaction($dailyCollection, $categoryId, $amountField, $type = 'debit')
+    {
+        $amount = $dailyCollection->$amountField;
+
+        $existingTransaction = Transaction::where('trx_id', $dailyCollection->trx_id)
+            ->where('transaction_category_id', $categoryId)
+            ->first();
+
+        $profit = AddProfit::where('daily_collection_id', $dailyCollection->id)->first();
+
+
+        if ($amount > 0) {
+            if ($profit) {
+                $profit->amount = $dailyCollection->profit_amount;
+                $profit->save();
+            }else{
+                AddProfit::create([
+                    'account_no' => $dailyCollection->account_no,
+                    'type' => 'daily',
+                    'amount' => $dailyCollection->profit_amount,
+                    'date' => $dailyCollection->date,
+                    'daily_collection_id' => $dailyCollection->id,
+                ]);
+            }
+            // Update or create the transaction
+            if ($existingTransaction) {
+                $existingTransaction->update([
+                    'amount' => $amount,
+                ]);
+
+            } else {
+                Transaction::create([
+                    'transaction_category_id' => $categoryId,
+                    'date' => $dailyCollection->date,
+                    'trx_id' => $dailyCollection->trx_id,
+                    'amount' => $amount,
+                    'account_no' => $dailyCollection->account_no,
+                    'member_id' => $dailyCollection->member_id,
+                    'user_id' => $dailyCollection->user_id,
+                    'type' => $type,
+                ]);
+
+            }
+        } elseif ($existingTransaction) {
+            // If the amount is 0 or empty, delete the existing transaction
+            $existingTransaction->delete();
+            $profit->delete();
+        }
+    }
     protected function updateTransaction($dailyCollection, $categoryId, $amountField, $type = 'debit')
     {
         $amount = $dailyCollection->$amountField;
@@ -369,6 +438,7 @@ class DailyCollectionController extends Controller
     {
         $collection = DailyCollection::find($id);
         $transaction = Transaction::where('trx_id',$collection->trx_id)->delete();
+        AddProfit::where('daily_collection_id', $collection->id)->delete();
         $delete = DailyCollection::destroy($id);
         // check data deleted or not
         if ($delete == 1) {

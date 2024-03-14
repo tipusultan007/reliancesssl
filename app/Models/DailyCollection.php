@@ -16,6 +16,7 @@ class DailyCollection extends Model
         'user_id',
         'date',
         'deposit',
+        'profit_amount',
         'withdraw',
         'loan_installment',
         'interest',

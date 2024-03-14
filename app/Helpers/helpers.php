@@ -168,7 +168,7 @@ function getMonthlyInstallment($account, $date)
 
     $dueSavings = getMonthListFromDate($savings->date, $date) - $paidSavings;
     if ($loan) {
-        $principal = $loan->balance;
+        $principal = $loan->remain_balance;
         $rate = $loan->interest_rate;
         $interest = ($principal * $rate * 1) / 100;
         $paidInterest = $collection->where('loan_id', $loan->id)->sum('interest_installments');

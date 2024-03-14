@@ -9,7 +9,16 @@ class AddProfit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['account_no','type','amount','description','date','year_month'];
+    protected $fillable = [
+        'account_no',
+        'daily_collection_id',
+        'monthly_collection_id',
+        'type',
+        'amount',
+        'description',
+        'date',
+        'trx_id',
+        'year_month'];
 
     public function daily()
     {
