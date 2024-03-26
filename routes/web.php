@@ -27,13 +27,13 @@ Auth::routes();
 
 
 Route::post('login', [\App\Http\Controllers\LoginController::class,'login']);
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/dashboard', [\App\Http\Controllers\ReportController::class,'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
-    Route::get('/', [\App\Http\Controllers\ReportController::class,'dashboard']);
+    //Route::get('/dashboard', [\App\Http\Controllers\ReportController::class,'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+    //Route::get('/', [\App\Http\Controllers\ReportController::class,'dashboard']);
 
     Route::get('new-account',[\App\Http\Controllers\AccountController::class,'newAccount'])->name('new.account');
 Route::post('store-account',[\App\Http\Controllers\AccountController::class,'store'])->name('store.account');

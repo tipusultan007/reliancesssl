@@ -484,12 +484,15 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @php
+$depositAndProfit = calculateRemainingDepositAndProfit($saving->total_deposit, $saving->total_profit, $saving->total_withdraw, $saving->total_balance)
+ @endphp
                             <tr>
                                 <td class="text-end "><input type="number" class="text-end total_deposited form-control"
-                                                             name="total_deposited" value="{{ $total_deposited }}"
+                                                             name="total_deposited" value="{{ $depositAndProfit['remainingDeposit'] }}"
                                                              readonly></td>
                                 <td class="text-end "><input type="number" class="text-end profit form-control"
-                                                             value="0" min="0" name="profit"></td>
+                                                             value="{{ $depositAndProfit['remainingProfit'] }}" min="0" name="profit"></td>
                                 <td class="text-end "><input type="number" class="text-end bonus form-control" value="0"
                                                              min="0" name="bonus"></td>
                                 <td class="text-end "><input type="number" class="text-end depositor_owing form-control"
@@ -504,7 +507,7 @@
                             <tr>
                                 <th class="text-center">মোট ঋন/বকেয়া</th>
                                 <th class="text-center">বকেয়া লভ্যাংশ</th>
-                                <th class="text-center">হিসাব প্রত্যাহার</th>
+                                <th class="text-center">হিসাব প্রত্যাহার ফি</th>
                                 <th class="text-center">জরিমানা</th>
                                 <th class="text-center">মোট টাকা</th>
                             </tr>
@@ -514,7 +517,7 @@
                                 <td class="text-end ">
                                     <input type="hidden" name="loan_id" value="{{ $loan?$loan->id:"" }}">
                                     <input type="number" class="text-end loan_balance form-control" name="loan_balance"
-                                           value="{{ $loan_balance }}" readonly></td>
+                                           value="{{ $loan?$loan->total_balance:0 }}" readonly></td>
                                 <td class="text-end "><input type="number" class="text-end due_interest form-control"
                                                              name="due_interest" value="{{ $due_interest }}" readonly>
                                 </td>
@@ -1174,15 +1177,19 @@
                 cancelButtonText: 'না, বাতিল করুন',
                 reverseButtons: !0
             }).then(function (e) {
-                $.ajax({
-                    type: 'get',
-                    url: "{{url('makeAccountActive')}}/" + account,
-                    success: function (results) {
-                        if (results == "success") {
-                            window.location.href = "{{ url('daily-savings') }}/{{ $saving->id }}";
+                if (e.value == true) {
+                    $.ajax({
+                        type: 'get',
+                        url: "{{url('makeAccountActive')}}/" + account,
+                        success: function (results) {
+                            if (results == "success") {
+                                window.location.href = "{{ url('daily-savings') }}/{{ $saving->id }}";
+                            }
                         }
-                    }
-                });
+                    });
+                }else {
+                    e.dismiss;
+                }
 
             }, function (dismiss) {
                 return false;

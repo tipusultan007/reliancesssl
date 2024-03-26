@@ -46,7 +46,7 @@ class AccountClosingController extends Controller
         if ($accountClosing->type=="daily")
         {
             $savings = DailySavings::where('account_no',$accountClosing->account_no)->first();
-            $savings->withdraw += $accountClosing->total_deposited;
+            $savings->withdraw = $accountClosing->total_deposited;
             $savings->profit = $accountClosing->profit;
             $savings->bonus = $accountClosing->bonus;
             $savings->status = 'closed';
@@ -55,7 +55,7 @@ class AccountClosingController extends Controller
             if ($accountClosing->loan_balance>0)
             {
                 $loan = DailyLoan::find($accountClosing->loan_id);
-                $loan->balance -= $accountClosing->loan_balance;
+                $loan->balance = 0;
                 $loan->status = "paid";
                 $loan->save();
             }
@@ -88,7 +88,7 @@ class AccountClosingController extends Controller
             ]);
         }else{
             $savings = MonthlySaving::where('account_no',$accountClosing->account_no)->first();
-            $savings->withdraw += $accountClosing->depositor_owing;
+            $savings->withdraw = $accountClosing->depositor_owing;
             $savings->profit = $accountClosing->profit;
             $savings->bonus = $accountClosing->bonus;
             $savings->status = 'closed';
@@ -97,9 +97,6 @@ class AccountClosingController extends Controller
             if ($accountClosing->loan_balance>0)
             {
                 $loan = MonthlyLoan::find($accountClosing->loan_id);
-                $loan->balance -= $accountClosing->loan_balance;
-                $loan->paid_loan += $accountClosing->loan_balance;
-                $loan->paid_interest += $accountClosing->due_interest;
                 $loan->status = "paid";
                 $loan->save();
             }

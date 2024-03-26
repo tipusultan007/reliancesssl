@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddProfit;
 use App\Models\DailyCollection;
 use App\Models\DailyLoan;
 use App\Models\DailySavings;
@@ -18,14 +19,18 @@ use App\Models\Transaction;
 use App\Models\TransactionCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
     public function dashboard()
     {
         $total_member = Member::count();
-
-        return view('dashboard',compact('total_member'));
+        $dailyCollection = DailyCollection::select(DB::raw('SUM(deposit) as deposit, SUM(withdraw) as withdraw'))->first();
+        $dailyProfit = AddProfit::where('type','daily')->sum('amount');
+        return view('dashboard',compact('total_member',
+        'dailyCollection','dailyProfit'
+        ));
 
     }
     public function savingCollections()

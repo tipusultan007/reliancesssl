@@ -261,3 +261,15 @@ function calculatePrincipal($amount,$installment,$total_amount)
 
     return $data;
 }
+function calculateRemainingDepositAndProfit($initialDeposit, $profit, $withdrawals, $remainingBalance) {
+    // Calculate the remaining deposit
+    $remainingDeposit = max(0, $initialDeposit - $withdrawals);
+
+    // Calculate the remaining profit
+    $remainingProfit = max(0, $remainingBalance - $remainingDeposit);
+
+    return [
+        'remainingDeposit' => $remainingDeposit,
+        'remainingProfit' => $remainingProfit
+    ];
+}
